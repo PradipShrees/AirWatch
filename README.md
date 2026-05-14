@@ -48,7 +48,7 @@ AirWatch turns a $20 air quality sensor and a Raspberry Pi into a real-time, mul
 
 ## 📸 Screenshots
 
-> *(Drop your own screenshots into `docs/screenshots/` and link them here.)*
+> *Not uploaded right now........maybe i won't >peace*
 
 ```
 docs/screenshots/
