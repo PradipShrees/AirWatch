@@ -28,5 +28,16 @@ services:
       timeout: 10s
       retries: 10
 
+  kafbat-ui:
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: airwatch-kafbat
+    restart: unless-stopped
+    # host network so it can reach Kafka at localhost:9092
+    network_mode: host
+    environment:
+      KAFKA_CLUSTERS_0_NAME: airwatch
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: localhost:9092
+      SERVER_PORT: 9001
+
 volumes:
   kafka-data:
