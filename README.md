@@ -2,7 +2,7 @@
 
 > A production-grade, end-to-end indoor air quality monitoring platform — built on a Raspberry Pi 5 with a Sensirion SEN54 sensor, streaming through Apache Kafka, persisting to PostgreSQL, served by FastAPI, and visualized in a React dashboard.
 
-AirWatch turns a $20 air quality sensor and a Raspberry Pi into a real-time, multi-user, alert-capable air quality platform you can access securely from anywhere. PM1/2.5/4/10, VOC, temperature, and humidity are sampled every 2 seconds, streamed through a real Kafka pipeline, scored against the US EPA AQI formula, and surfaced through a polished dashboard with live charts, a calendar heatmap, week-over-week insights, and a 48-hour outdoor forecast.
+AirWatch turns a $70 air quality sensor and a Raspberry Pi into a real-time, multi-user, alert-capable air quality platform you can access securely from anywhere. PM1/2.5/4/10, VOC, temperature, and humidity are sampled every 2 seconds, streamed through a real Kafka pipeline, scored against the US EPA AQI formula, and surfaced through a polished dashboard with live charts, a calendar heatmap, week-over-week insights, and a 48-hour outdoor forecast.
 
 ---
 
