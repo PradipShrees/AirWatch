@@ -47,6 +47,23 @@ function humStatus(v: number): [string, string] {
   return             ["High",     "#818cf8"];
 }
 
+const PM10_THRESHOLD = 500;
+
+function playAlertSound() {
+  const ctx = new AudioContext();
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "sine";
+  osc.frequency.value = 880;
+  gain.gain.setValueAtTime(0.4, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 1.2);
+  ctx.close();
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [devices,    setDevices]    = useState<Device[]>([]);
@@ -58,7 +75,9 @@ export default function Dashboard() {
   const [aqi,        setAqi]        = useState<AQIResult | null>(null);
   const [userEmail,  setUserEmail]  = useState("");
   const [now,        setNow]        = useState(new Date());
-  const wsRef = useRef<WebSocket | null>(null);
+  const [pm10Alert,  setPm10Alert]  = useState(false);
+  const wsRef        = useRef<WebSocket | null>(null);
+  const pm10AboveRef = useRef(false);
 
   useEffect(() => {
     api.get("/auth/me").then(({ data }) => setUserEmail(data.email));
@@ -91,6 +110,10 @@ export default function Dashboard() {
       if (topic === "sensor.raw") {
         setLive(data);
         setHistory(p => [...p.slice(-59), data]);
+        const isAbove = (data.pm10 ?? 0) >= PM10_THRESHOLD;
+        if (isAbove && !pm10AboveRef.current) playAlertSound();
+        pm10AboveRef.current = isAbove;
+        setPm10Alert(isAbove);
       }
       if (topic === "aqi.computed") {
         setAqi(data);
@@ -194,6 +217,19 @@ export default function Dashboard() {
           <div className="row" style={{ gridTemplateColumns: "1fr", marginBottom: 16 }}>
             <Recommendations reading={live} />
           </div>
+
+          {/* PM10 threshold banner */}
+          {pm10Alert && (
+            <div style={{
+              background: "#7f1d1d", border: "1px solid #ef4444", borderRadius: 8,
+              padding: "10px 16px", marginBottom: 16,
+              display: "flex", alignItems: "center", gap: 10,
+              fontSize: 13, color: "#fca5a5",
+            }}>
+              <IconAlert size={16} />
+              <strong>PM10 alert:</strong>&nbsp;concentration has exceeded {PM10_THRESHOLD} μg/m³ ({live?.pm10?.toFixed(1)} μg/m³)
+            </div>
+          )}
 
           {/* Row 2: Sensor readings */}
           <div className="section-hdr">
